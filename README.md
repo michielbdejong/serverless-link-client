@@ -25,9 +25,10 @@ mv ./tmp app/components/fxos-mvc/dist/mvc.js
 gulp build
 cd dist
 cordova create cordova
-rm -r cordova/www/*
-cp -r app/* cordova/www/
+# rm -r cordova/www/*
+# cp -r app/* cordova/www/
 cd cordova
+cordova plugin add https://github.com/michielbdejong/SecureHTTP.git
 cordova platform add android
 cordova build android
 cordova emulate android
