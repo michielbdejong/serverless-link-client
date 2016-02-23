@@ -12,11 +12,10 @@ var gulp = require('gulp');
 var buildModules = __dirname + '/node_modules/fxos-build/node_modules/';
 var concat = require(buildModules + 'gulp-concat');
 var to5 = require(buildModules + 'gulp-6to5');
-var rename = require('gulp-rename');
 var jshint = require(buildModules + 'gulp-jshint');
 var zip = require(buildModules + 'gulp-zip');
 var del = require(buildModules + 'del');
-var runSequence = require(buildModules + 'run-sequence').use(gulp);
+var runSequence = require(buildModules + 'run-sequence');
 var webserver = require(buildModules + 'gulp-webserver');
 
 const APP_ROOT = './app/';
@@ -64,7 +63,6 @@ gulp.task('copy-app', function() {
 gulp.task('to5', function () {
   var files = [
     APP_ROOT + 'js/**/*.js',
-    APP_ROOT + 'js/**/*.jsx'
     ];
 
   try {
@@ -79,14 +77,6 @@ gulp.task('to5', function () {
   }  catch(e) {
     console.log('Got error in 6to5', e);
   }
-});
-
-gulp.task('rename', function() {
-  return gulp.src(DIST_APP_ROOT + 'js/**/*.jsx')
-    .pipe(rename(function(path) {
-      path.extname = ".js";
-    }))
-    .pipe(gulp.dest(DIST_APP_ROOT + 'js/'));
 });
 
 /**
@@ -107,7 +97,7 @@ gulp.task('travis', ['lint', 'loader-polyfill', 'to5']);
  * Build the app.
  */
 gulp.task('build', function(cb) {
-  runSequence(['clobber'], ['loader-polyfill', 'copy-app'], ['to5'], ['rename', 'lint'], cb);
+  runSequence(['clobber'], ['loader-polyfill', 'copy-app'], ['to5', 'lint'], cb);
 });
 
 /**
