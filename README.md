@@ -19,6 +19,9 @@ Run `npm install -g cordova` to install Cordova, and make sure you have the Andr
 emulator installed. Then, to build this app as a Cordova app, run:
 
 ```bash
+BABELIFY=./node_modules/fxos-build/node_modules/gulp-6to5/node_modules/.bin/6to5
+$BABELIFY app/components/fxos-mvc/dist/mvc.js > ./tmp
+mv ./tmp app/components/fxos-mvc/dist/mvc.js
 gulp build
 cd dist
 cordova create cordova
