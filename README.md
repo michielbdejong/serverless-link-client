@@ -53,4 +53,27 @@ If the Android emulator starts but the app doesn't open, you can hit `^C` and
 run `cordova emulate android` again.
 
 You can use Chrome's dev tools -> more tools -> inspect devices
-to debug the Android emulator.
+to debug the Android emulator, and for instance run:
+```js
+window.cordovaHTTP.acceptOnFirstUse(true, function() {
+  console.log('success!');
+  window.cordovaHTTP.get('https://192.168.0.16:12346/', {
+  }, { }, function(response) {
+    console.log(response.certs);
+    console.log(response.status);
+  }, function(response) {
+    console.error(response.error);
+  });
+}, function() {
+  console.log('error :(');
+});
+```
+To update for instance the SecureHTTP plugin from a local repo checkout
+(`/Users/Michiel/repos/SecureHTTP` in my case), you can do:
+
+```bash
+cd dist/cordova/
+cordova plugin remove com.synconset.cordovaHTTP
+cordova plugin add /Users/Michiel/repos/SecureHTTP
+cordova emulate android
+```
