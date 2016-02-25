@@ -56,17 +56,39 @@ run `cordova emulate android` again.
 You can use Chrome's dev tools -> more tools -> inspect devices
 to debug the Android emulator, and for instance run:
 ```js
-window.cordovaHTTP.acceptAllCerts(true, function() {
+cordovaHTTP.acceptHss(true, function() {
   console.log('success!');
-  window.cordovaHTTP.get('https://192.168.0.16:12346/', {
+  cordovaHTTP.get('https://PxwGLFxy1x0hxgIVZ7cKFN0eE9kcFjmxCQ1kftXs6aw.michielbdejong.com:12346/', {
   }, { }, function(response) {
-    console.log(response.certs);
+    console.log(response.hssReport);
     console.log(response.status);
   }, function(response) {
+    console.log(response.hssReport);
     console.error(response.error);
   });
-}, function() {
-  console.log('error :(');
+}, function(e) {
+  console.log('error :(', e);
+});
+
+cordovaHTTP.get('https://PxwGLFxy1x0hxgIVZ7cKFN0eE9kcFjmxCQ1kftXs6aw.michielbdejong.com:12346/', {
+}, { }, function(response) {
+  console.log(response.hssReport);
+  console.log(response.status);
+}, function(response) {
+  console.log(response.hssReport);
+  console.error(response.error);
+});
+
+cordovaHTTP.acceptHss(true, function() {
+  console.log('success!');
+}, function(e) {
+  console.log('error :(', e);
+});
+
+cordovaHTTP.acceptAllCerts(true, function() {
+  console.log('success!');
+}, function(e) {
+  console.log('error :(', e);
 });
 ```
 To update for instance the SecureHTTP plugin from a local repo checkout
@@ -74,7 +96,5 @@ To update for instance the SecureHTTP plugin from a local repo checkout
 
 ```bash
 cd dist/cordova/
-cordova plugin remove com.synconset.cordovaHTTP
-cordova plugin add /Users/Michiel/repos/SecureHTTP
-cordova emulate android
+cordova plugin remove com.synconset.cordovaHTTP ; cordova plugin add /Users/Michiel/repos/SecureHTTP ; cordova emulate android
 ```
