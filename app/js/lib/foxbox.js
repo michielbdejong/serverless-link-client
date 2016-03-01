@@ -6,6 +6,7 @@ import { Service } from 'components/fxos-mvc/dist/mvc';
 
 import FoxboxSettings from './foxbox-settings';
 import FoxboxDb from './foxbox-db';
+import FoxboxQr from './foxbox-qr';
 
 // The delay after which a request is considered failed.
 const REQUEST_TIMEOUT = 5000;
@@ -63,6 +64,7 @@ export default class Foxbox extends Service {
     super();
     this.settings = new FoxboxSettings();
     this.db = new FoxboxDb();
+    this.qr = new FoxboxQr();
   }
 
   init() {
