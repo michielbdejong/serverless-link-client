@@ -52,6 +52,7 @@ export default class UserLogin extends React.Component {
             onChange={this.handleOnChange.bind(this, 'username')}/></label>
           <label><span>Password</span><input type="password" value={this.state.password}
             onChange={this.handleOnChange.bind(this, 'password')}/></label>
+          <a href="http://localhost:3000/?redirect_url=http%3A%2F%2Flocalhost%3A8000%2F">Create user</a>
           <button>Log in</button>
         </form>
         <Modal visible={this.state.isModalVisible} title={this.state.title} body={this.state.body} dismiss={this.dismissModal.bind(this)}/>
