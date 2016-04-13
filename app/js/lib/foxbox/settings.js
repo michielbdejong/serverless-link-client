@@ -5,14 +5,10 @@ import { Model } from 'components/mvc';
 // Prefix all entries to avoid collisions.
 const PREFIX = 'foxbox-';
 
-const DEFAULT_SCHEME = 'http';
-const DEFAULT_HOSTNAME = 'localhost';
-const DEFAULT_PORT = 3000;
 const DEFAULT_POLLING_ENABLED = true;
 const POLLING_INTERVAL = 2000;
 const ONLINE_CHECKING_INTERVAL = 5000;
 const ONLINE_CHECKING_LONG_INTERVAL = 1000 * 60 * 5;
-const REGISTRATION_SERVICE = 'http://knilxof.org:4242/ping';
 const API_VERSION = 1;
 
 /**
@@ -33,9 +29,6 @@ const storage = localStorage ? localStorage : {
 
 export default class Settings extends Model {
   constructor() {
-    const localHostName = storage.getItem(`${PREFIX}localHostname`) ||
-      DEFAULT_HOSTNAME;
-
     const pollingEnabled = storage.getItem(`${PREFIX}pollingEnabled`) !== null ?
       storage.getItem(`${PREFIX}pollingEnabled`) === 'true' :
       DEFAULT_POLLING_ENABLED;
@@ -44,13 +37,8 @@ export default class Settings extends Model {
       _configured: storage.getItem(`${PREFIX}configured`) !== null ?
       storage.getItem(`${PREFIX}configured`) === 'true' : false,
 
-      _localScheme: storage.getItem(`${PREFIX}localScheme`) || DEFAULT_SCHEME,
-      _localHostname: localHostName,
-      _localPort: storage.getItem(`${PREFIX}localPort`) || DEFAULT_PORT,
-
-      _tunnelScheme: storage.getItem(`${PREFIX}tunnelScheme`) || DEFAULT_SCHEME,
-      _tunnelHostname: storage.getItem(`${PREFIX}tunnelHostname`) || '',
-      _tunnelPort: storage.getItem(`${PREFIX}tunnelPort`) || DEFAULT_PORT,
+      _url: storage.getItem(`${ PREFIX }url`),
+      _ipaddrs: storage.getItem(`${ PREFIX }ipaddrs`) || [],
 
       _session: storage.getItem(`${PREFIX}session`),
       _skipDiscovery: storage.getItem(`${PREFIX}skipDiscovery`) === 'true',
@@ -83,64 +71,22 @@ export default class Settings extends Model {
     storage.setItem(`${PREFIX}configured`, value);
   }
 
-  get localScheme() {
-    return this._localScheme;
+  get url() {
+    return this._url;
   }
 
-  set localScheme(scheme) {
-    scheme = String(scheme) || DEFAULT_SCHEME;
-    this._localScheme = scheme;
-    storage.setItem(`${PREFIX}localScheme`, this._localScheme);
+  set url(url) {
+    this._url = String(url);
+    storage.setItem(`${PREFIX}url`, this._url);
   }
 
-  get localHostname() {
-    return this._localHostname;
+  get ipaddrs() {
+    return this._ipaddrs;
   }
 
-  set localHostname(hostname) {
-    hostname = String(hostname) || DEFAULT_HOSTNAME;
-    this._localHostname = hostname.replace(/\/$/, ''); // Trailing slash.
-    storage.setItem(`${PREFIX}localHostname`, this._localHostname);
-  }
-
-  get localPort() {
-    return this._localPort;
-  }
-
-  set localPort(port) {
-    port = parseInt(port, 10) || DEFAULT_PORT;
-    this._localPort = port;
-    storage.setItem(`${PREFIX}localPort`, this._localPort);
-  }
-
-  get tunnelScheme() {
-    return this._tunnelScheme;
-  }
-
-  set tunnelScheme(scheme) {
-    scheme = String(scheme) || DEFAULT_SCHEME;
-    this._tunnelScheme = scheme;
-    storage.setItem(`${PREFIX}tunnelScheme`, this._tunnelScheme);
-  }
-
-  get tunnelHostname() {
-    return this._tunnelHostname;
-  }
-
-  set tunnelHostname(hostname) {
-    hostname = String(hostname) || DEFAULT_HOSTNAME;
-    this._tunnelHostname = hostname.replace(/\/$/, ''); // Trailing slash.
-    storage.setItem(`${PREFIX}tunnelHostname`, this._tunnelHostname);
-  }
-
-  get tunnelPort() {
-    return this._tunnelPort;
-  }
-
-  set tunnelPort(port) {
-    port = parseInt(port, 10) || DEFAULT_PORT;
-    this._tunnelPort = port;
-    storage.setItem(`${PREFIX}tunnelPort`, this._tunnelPort);
+  set ipaddrs(ipaddrs) {
+    this._ipaddrs = ipaddrs || [];
+    storage.setItem(`${PREFIX}ipaddrs`, this._ipaddrs);
   }
 
   get session() {
@@ -178,11 +124,6 @@ export default class Settings extends Model {
   }
 
   // Getters only.
-  get registrationService() {
-    return localStorage.registrationServer ||
-      REGISTRATION_SERVICE;
-  }
-
   get pollingInterval() {
     return POLLING_INTERVAL;
   }

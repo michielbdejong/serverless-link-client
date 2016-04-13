@@ -106,8 +106,7 @@ export default class Foxbox extends Service {
   }
 
   /**
-   * Get the IP address of the box on the local network using the registration
-   * server.
+   * Get the IP address of the box on the local network using mDNS.
    * If it fails, we fallback to the previously set hostname.
    * It there isn't, it falls back to localhost.
    *
@@ -121,33 +120,15 @@ export default class Foxbox extends Service {
     if (this[p.settings].skipDiscovery) {
       return Promise.resolve();
     }
-
-    return new Promise((resolve) => {
-      this[p.net].fetchJSON(this[p.settings].registrationService)
-        .then(boxes => {
-          if (!Array.isArray(boxes) || boxes.length === 0) {
-            return resolve();
+    window.cordova.plugins.zeroconf.watch('_https._tcp.local.',
+        function(result) {
+          const action = result.action;
+          const service = result.service;
+          if (action == 'added') {
+            this[p.boxes].push(service);
           }
-
-          // We filter out boxes registered more than 5 minutes ago.
-          const now = Math.floor(Date.now() / 1000) - 60 * 5;
-          this[p.boxes] = Object.freeze(
-            boxes
-              .filter(box => box.timestamp - now >= 0)
-              .map(box => Object.freeze(box))
-          );
-
-          if (!this[p.settings].configured) {
-            this.selectBox();
-          }
-          resolve();
-        })
-        .catch(() => {
-          // When something goes wrong, we still want to resolve the promise so
-          // that a hostname set previously is reused.
-          resolve();
         });
-    });
+    return Promise.resolve();
   }
 
   /**
@@ -165,12 +146,8 @@ export default class Foxbox extends Service {
 
     const box = this[p.boxes][index];
 
-    this[p.settings].localHostname = box.local_ip;
-    if (box.tunnel_url) {
-      this[p.settings].tunnelHostname = box.tunnel_url;
-    } else {
-      this[p.settings].tunnelHostname = '';
-    }
+    this[p.settings].url = `https://${box.txtRecord.name}:${box.port}`;
+    this[p.settings].ipaddrs = box.addresses;
 
     this[p.settings].configured = true;
   }

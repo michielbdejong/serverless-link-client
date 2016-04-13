@@ -70,15 +70,7 @@ export default class Network {
   get localOrigin() {
     const settings = this[p.settings];
 
-    return `${settings.localScheme}://${settings.localHostname}:` +
-      `${settings.localPort}`;
-  }
-
-  get tunnelOrigin() {
-    const settings = this[p.settings];
-
-    return `${settings.tunnelScheme}://${settings.tunnelHostname}:` +
-      `${settings.tunnelPort}`;
+    return settings.url;
   }
 
   get connected() {
@@ -133,8 +125,8 @@ export default class Network {
    * @return {Promise}
    * @private
    */
-  [p.fetch](url, accept, method = 'GET', body = undefined) {
-    method = method.toUpperCase();
+  [p.fetch](url, accept, method = 'get', body = undefined) {
+    method = method.toLowerCase();
 
     const req = {
       method,
@@ -142,7 +134,7 @@ export default class Network {
       cache: 'no-store'
     };
 
-    if (method === 'POST' || method === 'PUT') {
+    if (method === 'post' || method === 'put') {
       req.headers['Content-Type'] = 'application/json;charset=UTF-8';
     }
 
@@ -155,20 +147,15 @@ export default class Network {
       req.body = JSON.stringify(body);
     }
 
-    return fetch(url, req)
-      .then(res => {
-        if (!res.ok) {
-          throw new TypeError(
-            `The response returned a ${res.status} HTTP status code.`
-          );
-        }
-
-        return res;
-      })
-      .catch(error => {
-        console.error('Error occurred while fetching content: ', error);
-        throw error;
-      });
+    return new Promise((resolve, reject) => {
+      window.cordovaHTTP.acceptHss(true, function() {
+        window.cordovaHTTP[req.method](url, {}, req.headers,
+            function(response) {
+              console.log('got response!', response);
+              resolve(response);
+            }, reject);
+      }, reject);
+    });
   }
 
   /**
@@ -205,6 +192,7 @@ export default class Network {
    * @private
    */
   [p.ping](url) {
+    // FIXME: use cordovaHTTP for this
     return fetch(url, { cache: 'no-store' })
       .then(res => res.ok)
       .catch(error => {
