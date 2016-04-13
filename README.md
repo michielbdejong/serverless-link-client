@@ -50,14 +50,14 @@ $ npm install -g cordova
 ## How to build?
 
 ```bash
-$ gulp
+$ gulp build
 $ gulp cordova-setup
 $ gulp cordova-android
 ```
 
 Make sure you have either an Android device connected over the Android Debugging Bridge, or have the Android emulator installed.
 
-If the Android emulator starts but the app doesn't open, you can hit ^C and run cd dist/cordova ; cordova emulate android again.
+If the Android emulator starts but the app doesn't open, you can hit ^C and run cd dist/cordova ; cordova emulate android again. Make sure you unlock the lockscreen.
 
 You can use Chrome's dev tools -> more tools -> inspect devices to debug the Android emulator.
 
