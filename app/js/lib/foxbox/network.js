@@ -147,14 +147,14 @@ export default class Network {
       req.body = JSON.stringify(body);
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       window.cordovaHTTP.acceptHss(true, function() {
         window.cordovaHTTP[req.method](url, {}, req.headers,
             function(response) {
-              console.log('got response!', response);
-              resolve(response);
-            }, reject);
-      }, reject);
+          console.log('got response!', response);
+          resolve(response);
+        });
+      });
     });
   }
 

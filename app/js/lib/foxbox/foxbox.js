@@ -148,8 +148,11 @@ export default class Foxbox extends Service {
 
     this[p.settings].url = `https://${box.txtRecord.name}:${box.port}`;
     this[p.settings].ipaddrs = box.addresses;
-
-    this[p.settings].configured = true;
+    window.cordovaHTTP.setProxyHost(box.addresses[0], function() {
+      window.cordovaHTTP.setProxyPort(box.port, function() {
+        this[p.settings].configured = true;
+      });
+    });
   }
 
   /**
