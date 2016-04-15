@@ -166,21 +166,23 @@ export default class Foxbox extends Service {
       return Promise.resolve();
     }
 
-    const queryString = location.search.substring(1);
-    const searchParams = new URLSearchParams(queryString);
+    const queryStringParts = location.search.substring(1).split('&');
+    for(let i=0; i<queryStringParts.length; i++) {
+      if (queryStringParts[i].substring(0, 'session_token='.length) ===
+          'session_token') {
+        // There is a session token in the URL, let's remember it.
+        // @todo Find a better way to handle URL escape.
+        this[p.settings].session = queryStringParts[i].substring(0,
+            'session_token='.length)
+          .replace(/ /g, '+');
 
-    if (searchParams.has('session_token')) {
-      // There is a session token in the URL, let's remember it.
-      // @todo Find a better way to handle URL escape.
-      this[p.settings].session = searchParams.get('session_token')
-        .replace(/ /g, '+');
+        // Remove the session param from the current location.
+        queryStringParts.splice(i, 1);
+        location.search = queryStringParts.join('&');
 
-      // Remove the session param from the current location.
-      searchParams.delete('session_token');
-      location.search = searchParams.toString();
-
-      // Throwing here to abort the promise chain.
-      throw(new Error('Redirecting to a URL without session'));
+        // Throwing here to abort the promise chain.
+        throw(new Error('Redirecting to a URL without session'));
+      }
     }
 
     return Promise.resolve();
