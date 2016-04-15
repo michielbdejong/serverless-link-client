@@ -114,20 +114,22 @@ export default class Foxbox extends Service {
    * @private
    */
   _initDiscovery() {
+    console.log('init discovery!');
     // For development purposes if you want to skip the
     // discovery phase set the 'foxbox-skipDiscovery' variable to
     // 'true'.
     if (this[p.settings].skipDiscovery) {
       return Promise.resolve();
     }
-    window.cordova.plugins.zeroconf.watch('_https._tcp.local.',
-        function(result) {
-          const action = result.action;
-          const service = result.service;
-          if (action == 'added') {
-            this[p.boxes].push(service);
-          }
-        });
+    window.cordova.plugins.zeroconf.watch('_https._tcp.local.', result => {
+      console.log('service found!', result);
+      const action = result.action;
+      const service = result.service;
+      if (action == 'added') {
+        this[p.boxes].push(service);
+        this.selectBox();
+      }
+    });
     return Promise.resolve();
   }
 
@@ -145,7 +147,7 @@ export default class Foxbox extends Service {
     }
 
     const box = this[p.boxes][index];
-
+    console.log('selecting box', box);
     this[p.settings].url = `https://${box.txtRecord.name}:${box.port}`;
     this[p.settings].ipaddrs = box.addresses;
     window.cordovaHTTP.setProxyHost(box.addresses[0], function() {
