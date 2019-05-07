@@ -1,6 +1,6 @@
 # ![Serverless Project Link app](https://raw.githubusercontent.com/fxbox/app/master/app/img/icons/32.png "Project Link app") Serverless Project Link app
 
-[![License](https://img.shields.io/badge/license-MPL2-blue.svg)](https://raw.githubusercontent.com/fxbox/app/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MPL2-blue.svg)](https://raw.githubusercontent.com/fxbox/app/master/LICENSE) [![Greenkeeper badge](https://badges.greenkeeper.io/michielbdejong/serverless-link-client.svg)](https://greenkeeper.io/)
 
 > A serverless app for [Project Link](https://wiki.mozilla.org/Project_Link)
 
